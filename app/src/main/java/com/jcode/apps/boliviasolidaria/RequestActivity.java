@@ -2,6 +2,7 @@ package com.jcode.apps.boliviasolidaria;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +13,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -32,15 +37,28 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.jcode.apps.boliviasolidaria.entity.HelpRequest;
 import com.jcode.apps.boliviasolidaria.utils.FilterImage;
 import com.jcode.apps.boliviasolidaria.utils.ImageManager;
+import com.jcode.apps.boliviasolidaria.web.Api;
+import com.jcode.apps.boliviasolidaria.web.ApiInterface;
+import com.jcode.apps.boliviasolidaria.web.BodyFile;
+import com.jcode.apps.boliviasolidaria.web.ServerResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RequestActivity extends FragmentActivity {
 
@@ -59,7 +77,16 @@ public class RequestActivity extends FragmentActivity {
     private ImageView ivCI;
 
     private File photoFile;
-    private String photo_doc = "";
+    private File photoFileToSend;
+
+    private HelpRequest helpRequest = new HelpRequest();
+
+    private EditText etDesc;
+    private EditText etName;
+    private EditText etPhone;
+    private EditText etCI;
+    private EditText etAddress;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +97,14 @@ public class RequestActivity extends FragmentActivity {
         lyData1 = findViewById(R.id.lyData1);
         lyData2 = findViewById(R.id.lyData2);
         btnBack = findViewById(R.id.btnBack);
+        etDesc = findViewById(R.id.etDesc);
+        etName = findViewById(R.id.etName);
+        etPhone = findViewById(R.id.etPhone);
+        etCI = findViewById(R.id.etCI);
+        etAddress = findViewById(R.id.etAddress);
+
         ivCI = findViewById(R.id.ivCI);
+
         btnSaveRequest = findViewById(R.id.btnSaveRequest);
         loadMap();
 
@@ -96,9 +130,174 @@ public class RequestActivity extends FragmentActivity {
 
     private void saveRequest() {
 
+        String msgValid = "";
+        ivCI.setBackgroundResource(R.drawable.edit_text);
+        if (map == null) {
+            msgValid += " - No se logro cargar la ubicación (Revise conexión o intente mas tarde).\n";
+        }
+
+        if (photoFileToSend == null) {
+            ivCI.setBackgroundResource(R.drawable.edit_text_invalid);
+            msgValid += " - Debe tomar una Foto del Carnet.\n";
+        }
+
+        if (!msgValid.isEmpty()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(msgValid)
+                    .setTitle("Revise sus datos");
+            builder.create().show();
+            return;
+        }
+
+        position = map.getCameraPosition().target;
+        helpRequest.setLat(position.latitude);
+        helpRequest.setLng(position.longitude);
+
+        ApiInterface api = Api.getService();
+        Call<ServerResponse> call = api.sendHelpRequest(helpRequest);
+        progress.setTitle("Enviando solicitud...");
+        progress.show();
+        call.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.body().getId() > 0) {
+                    helpRequest.setId(response.body().getId());
+                    savePhoto();
+                } else {
+                    progress.cancel();
+                    Toast.makeText(RequestActivity.this, "Fallo al enviar Solicitu.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                progress.cancel();
+                Toast.makeText(RequestActivity.this, "Fallo al enviar Solicitu.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    private void savePhoto() {
+        BodyFile bf = new BodyFile();
+        bf.setFoto(readFileToByteArray(photoFileToSend));
+
+        Call<String> call = Api.getService().sendPhotoCI2(helpRequest.getId(), bf);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                progress.cancel();
+                String r = response.body();
+                if (r == null || r.isEmpty()) {
+                    Toast.makeText(RequestActivity.this, "Guardado correctamente.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(RequestActivity.this, "Fallo al enviar Imagen.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progress.cancel();
+                Toast.makeText(RequestActivity.this, "Fallo al enviar Imagen.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * This method uses java.io.FileInputStream to read
+     * file content into a byte array
+     *
+     * @param file
+     * @return
+     */
+    private static byte[] readFileToByteArray(File file) {
+        FileInputStream fis = null;
+        // Creating a byte array using the length of the file
+        // file.length returns long which is cast to int
+        byte[] bArray = new byte[(int) file.length()];
+        try {
+            fis = new FileInputStream(file);
+            fis.read(bArray);
+            fis.close();
+
+        } catch (IOException ioExp) {
+            ioExp.printStackTrace();
+        }
+        return bArray;
+    }
+
+    private MultipartBody.Part prepareFilePart(String partName, File file) {
+        Uri fileUri = null;
+        if (Build.VERSION.SDK_INT >= 24) {
+            fileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", this.photoFile);
+        } else {
+            fileUri = Uri.fromFile(this.photoFile);
+        }
+        // create RequestBody instance from file
+        RequestBody requestFile =
+                RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(fileUri)),
+                        file
+                );
+
+        // MultipartBody.Part is used to send also the actual file name
+        return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+    }
+
+
     private void step2() {
+
+        String desc = etDesc.getText().toString().trim();
+        String ci = etCI.getText().toString().trim();
+        String name = etName.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+
+        etDesc.setBackgroundResource(R.drawable.edit_text);
+        etCI.setBackgroundResource(R.drawable.edit_text);
+        etName.setBackgroundResource(R.drawable.edit_text);
+        etPhone.setBackgroundResource(R.drawable.edit_text);
+        etAddress.setBackgroundResource(R.drawable.edit_text);
+
+        String msgValid = "";
+
+        if (desc.length() < 3) {
+            etDesc.setBackgroundResource(R.drawable.edit_text_invalid);
+            msgValid += " - Debe ingresar ¿Que ayuda necesita?.\n";
+        }
+        if (ci.length() < 6) {
+            etCI.setBackgroundResource(R.drawable.edit_text_invalid);
+            msgValid += " - CI o documento inválido (6 números).\n";
+        }
+        if (name.length() < 9) {
+            etName.setBackgroundResource(R.drawable.edit_text_invalid);
+            msgValid += " - Nombre inválido (Muy corto minimo 9 caracteres).\n";
+        }
+        if (phone.length() < 6) {
+            etPhone.setBackgroundResource(R.drawable.edit_text_invalid);
+            msgValid += " - Celular o teléfono inválido (6 números).\n";
+        }
+
+        if (address.length() < 6) {
+            etAddress.setBackgroundResource(R.drawable.edit_text_invalid);
+            msgValid += " - Dirección inválida (Muy corta minimo 10 caracteres).\n";
+        }
+
+        if (!msgValid.isEmpty()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(msgValid)
+                    .setTitle("Revise sus datos");
+            builder.create().show();
+            return;
+        }
+
+        helpRequest.setId(0L);
+        helpRequest.setNecesidad(desc);
+        helpRequest.setCi(ci);
+        helpRequest.setNombre(name);
+        helpRequest.setContacto(phone);
+        helpRequest.setDireccion(address);
+
 
         if (Build.VERSION.SDK_INT > 22) {
             if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
@@ -233,10 +432,9 @@ public class RequestActivity extends FragmentActivity {
             case REQUEST_IMAGE_CAPTURE:
                 try {
                     ExifInterface exif = new ExifInterface(photoFile.getAbsolutePath());
-                    File _file = saveImageOnDirectory(photoFile, exif.getAttribute(ExifInterface.TAG_ORIENTATION));
+                    photoFileToSend = saveImageOnDirectory(photoFile, exif.getAttribute(ExifInterface.TAG_ORIENTATION));
                     photoFile.delete();
-                    photo_doc = _file.getAbsolutePath();
-                    Glide.with(RequestActivity.this).load(photo_doc).into(ivCI);
+                    Glide.with(RequestActivity.this).load(photoFileToSend.getAbsolutePath()).into(ivCI);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -247,9 +445,8 @@ public class RequestActivity extends FragmentActivity {
                     Uri photoUri = data.getData();
                     String path = getRealPathFromURI(photoUri);
                     ExifInterface exif = new ExifInterface(path);
-                    File _file = saveImageOnDirectory(new File(path), exif.getAttribute(ExifInterface.TAG_ORIENTATION));
-                    photo_doc = _file.getAbsolutePath();
-                    Glide.with(RequestActivity.this).load(photo_doc).into(ivCI);
+                    photoFileToSend = saveImageOnDirectory(new File(path), exif.getAttribute(ExifInterface.TAG_ORIENTATION));
+                    Glide.with(RequestActivity.this).load(photoFileToSend.getAbsolutePath()).into(ivCI);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

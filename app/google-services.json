@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "472801919759",
+    "firebase_url": "https://bolivia-solidaria.firebaseio.com",
+    "project_id": "bolivia-solidaria",
+    "storage_bucket": "bolivia-solidaria.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472801919759:android:0cbac591a9f49c476ab47a",
+        "android_client_info": {
+          "package_name": "com.jcode.apps.boliviasolidaria"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472801919759-d810ludhup9qcpd31citjlub5qsp1amo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jcode.apps.boliviasolidaria",
+            "certificate_hash": "7db67ac6b6a4fa197f1e472aae13f75fb16bfc31"
+          }
+        },
+        {
+          "client_id": "472801919759-0p6dc0ds96b5bq2nmu9urbcq8eh12klh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jcode.apps.boliviasolidaria",
+            "certificate_hash": "8ec0ab47b1029ce775da625144f7401dba624d9d"
+          }
+        },
+        {
+          "client_id": "472801919759-a2k2ukis6t0fea8knk1aeqsvv9rok8m8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAQjdaNYanyJH2xmMBjuZe4k2JjHz1Xuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472801919759-a2k2ukis6t0fea8knk1aeqsvv9rok8m8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
