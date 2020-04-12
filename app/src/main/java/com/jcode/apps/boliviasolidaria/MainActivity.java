@@ -1,15 +1,14 @@
 package com.jcode.apps.boliviasolidaria;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +31,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRequestHelp(View view) {
         Intent intent = new Intent(this, RequestActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickDonateProducts(View view) {
+        Intent intent = new Intent(this, MapPointsActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickDonateMoney(View view) {
+        Intent intent = new Intent(this, MoneyHelpActivity.class);
         startActivity(intent);
     }
 }

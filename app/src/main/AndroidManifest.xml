@@ -23,15 +23,26 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity">
+        </activity>
+
+        <activity android:name=".MoneyHelpActivity">
+        </activity>
+
         <activity android:name=".RequestActivity">
         </activity>
+
+        <activity android:name=".MapPointsActivity">
+        </activity>
+
         <provider
             android:name=".utils.GenericFileProvider"
             android:authorities="${applicationId}.fileprovider"

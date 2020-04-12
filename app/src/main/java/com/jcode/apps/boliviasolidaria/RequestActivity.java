@@ -267,7 +267,7 @@ public class RequestActivity extends FragmentActivity {
         }
         if (ci.length() < 6) {
             etCI.setBackgroundResource(R.drawable.edit_text_invalid);
-            msgValid += " - CI o documento inválido (6 números).\n";
+            msgValid += " - CI o documento inválido (mínimo 6 números).\n";
         }
         if (name.length() < 9) {
             etName.setBackgroundResource(R.drawable.edit_text_invalid);
@@ -275,12 +275,12 @@ public class RequestActivity extends FragmentActivity {
         }
         if (phone.length() < 6) {
             etPhone.setBackgroundResource(R.drawable.edit_text_invalid);
-            msgValid += " - Celular o teléfono inválido (6 números).\n";
+            msgValid += " - Celular o teléfono inválido (mínimo 6 números).\n";
         }
 
         if (address.length() < 6) {
             etAddress.setBackgroundResource(R.drawable.edit_text_invalid);
-            msgValid += " - Dirección inválida (Muy corta minimo 10 caracteres).\n";
+            msgValid += " - Dirección inválida (Muy corta mínimo 10 caracteres).\n";
         }
 
         if (!msgValid.isEmpty()) {

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapPointsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:background="#FFEBEE"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:adjustViewBounds="true"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/marker_red" />
+
+            <CheckBox
+                android:id="@+id/cbRequest"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:checked="true"
+                android:text=" VER SOLICITUDES DE PERSONAS"
+                android:textColor="#424242"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:background="#E3F2FD"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:adjustViewBounds="true"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/marker_blue" />
+
+            <CheckBox
+                android:id="@+id/cbCenters"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:checked="true"
+                android:text=" VER CENTROS DE DISTRIBUCION"
+                android:textColor="#424242"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#EF5350"
+            android:text="Revisa las personas cerca de ti que necesitan ayuda, y tambien los lugares donde reciben donaciones."
+            android:textSize="16sp" />
+
+        <fragment
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
