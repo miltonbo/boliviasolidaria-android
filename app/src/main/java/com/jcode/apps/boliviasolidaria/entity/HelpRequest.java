@@ -14,6 +14,8 @@ public class HelpRequest implements Serializable {
     private double lng;
     private long fechahoraSolicitud;
 
+    private String fotoCarnetLocal;
+
     public long getId() {
         return id;
     }
@@ -84,5 +86,13 @@ public class HelpRequest implements Serializable {
 
     public void setFechahoraSolicitud(long fechahoraSolicitud) {
         this.fechahoraSolicitud = fechahoraSolicitud;
+    }
+
+    public String getFotoCarnetLocal() {
+        return fotoCarnetLocal;
+    }
+
+    public void setFotoCarnetLocal(String fotoCarnetLocal) {
+        this.fotoCarnetLocal = fotoCarnetLocal;
     }
 }

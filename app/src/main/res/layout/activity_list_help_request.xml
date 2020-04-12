@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MoneyHelpActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.1"
+        android:background="@android:color/transparent"
+        android:clickable="false"
+        android:scaleType="fitEnd"
+        android:src="@drawable/fondo_ayuda" />
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:text="Solicitudes que has registrado"
+        android:textColor="#424242"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
+        android:layout_below="@+id/tv1">
+
+        <LinearLayout
+            android:id="@+id/lyItems"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingTop="25dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="25dp">
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSaveRequest"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_1"
+            android:onClick="onClickNew"
+            android:text="NUEVA SOLICITUD"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+</RelativeLayout>

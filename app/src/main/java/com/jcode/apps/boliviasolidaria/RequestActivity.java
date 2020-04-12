@@ -162,6 +162,8 @@ public class RequestActivity extends FragmentActivity {
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.body().getId() > 0) {
                     helpRequest.setId(response.body().getId());
+                    helpRequest.setFotoCarnetLocal(photoFileToSend.getAbsolutePath());
+                    new Prefs(RequestActivity.this).addRequest(helpRequest);
                     savePhoto();
                 } else {
                     progress.cancel();
@@ -225,25 +227,6 @@ public class RequestActivity extends FragmentActivity {
         }
         return bArray;
     }
-
-    private MultipartBody.Part prepareFilePart(String partName, File file) {
-        Uri fileUri = null;
-        if (Build.VERSION.SDK_INT >= 24) {
-            fileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", this.photoFile);
-        } else {
-            fileUri = Uri.fromFile(this.photoFile);
-        }
-        // create RequestBody instance from file
-        RequestBody requestFile =
-                RequestBody.create(
-                        MediaType.parse(getContentResolver().getType(fileUri)),
-                        file
-                );
-
-        // MultipartBody.Part is used to send also the actual file name
-        return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
-    }
-
 
     private void step2() {
 
