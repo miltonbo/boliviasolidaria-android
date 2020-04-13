@@ -36,17 +36,38 @@ public class ListHelRequestActivity extends Activity {
         setContentView(R.layout.activity_list_help_request);
         lyItems = findViewById(R.id.lyItems);
 
+        progres = new ProgressDialog(this);
+        progres.setTitle("Cargando solicitudes...");
+
+    }
+
+    private void loadRequests() {
+        lyItems.removeAllViews();
         List<HelpRequest> list = new Prefs(this).listRequests();
-        for (HelpRequest hr : list) {
-            View view = getLayoutInflater().inflate(R.layout.item_receptor, null, true);
-//            ((TextView) view.findViewById(R.id.tvNameReceptor)).setText(re.getEmpresa());
-            lyItems.addView(view);
+        if (list.isEmpty()) {
+            startActivity(new Intent(this, RequestActivity.class));
+            finish();
+            return;
         }
 
+        for (HelpRequest hr : list) {
+            View view = getLayoutInflater().inflate(R.layout.item_help_request, null, true);
+            ((TextView) view.findViewById(R.id.tvName)).setText(hr.getNombre());
+            ((TextView) view.findViewById(R.id.tvDesc)).setText(hr.getNecesidad());
+            ((TextView) view.findViewById(R.id.tvCIPhone)).setText("CI: " + hr.getCi() + "  Telf: " + hr.getContacto());
+            ((TextView) view.findViewById(R.id.tvAddress)).setText(hr.getDireccion());
+            Glide.with(this).load(hr.getFotoCarnetLocal()).into((ImageView) view.findViewById(R.id.ivCIRequest));
+            lyItems.addView(view);
+        }
     }
 
     public void onClickNew(View view) {
         startActivity(new Intent(this, RequestActivity.class));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadRequests();
+    }
 }

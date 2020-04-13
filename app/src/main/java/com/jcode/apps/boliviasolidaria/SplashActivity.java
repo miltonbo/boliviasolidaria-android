@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 //------------------------------------------
 
@@ -27,6 +29,7 @@ public class SplashActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_splash);
+		Fabric.with(this, new Crashlytics());
 		// --HANDLER FOR SPLASH--------------
 		// initConfigurations();
 		new Handler().postDelayed(new Runnable() {

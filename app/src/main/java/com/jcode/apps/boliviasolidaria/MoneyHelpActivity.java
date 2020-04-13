@@ -53,8 +53,7 @@ public class MoneyHelpActivity extends Activity {
                         LinearLayout lyAcc = view.findViewById(R.id.lyAccounts);
                         for (BankAccount ba : re.getCuentas()) {
                             View viewAcc = getLayoutInflater().inflate(R.layout.item_bank_account, null, true);
-                            ((TextView) viewAcc.findViewById(R.id.tvTypeAccount)).setText(ba.getTipoCuenta());
-                            ((TextView) viewAcc.findViewById(R.id.tvNameBank)).setText(ba.getBanco());
+                            ((TextView) viewAcc.findViewById(R.id.tvNameBank)).setText(ba.getTipoCuenta() + " " + ba.getBanco());
                             ((TextView) viewAcc.findViewById(R.id.tvNroAccount)).setText(ba.getNroCuenta());
                             ((TextView) viewAcc.findViewById(R.id.tvNameTitular)).setText(ba.getTitular());
                             ((TextView) viewAcc.findViewById(R.id.tvTypeDoc)).setText(ba.getDocumento() + ":");

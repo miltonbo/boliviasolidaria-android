@@ -2,5 +2,5 @@
     <string name="app_name">Bolivia Solidaria</string>
     <string name="google_android_api_key">AIzaSyBAQjdaNYanyJH2xmMBjuZe4k2JjHz1Xuk</string>
     <string name="google_request_app_id">472801919759-a2k2ukis6t0fea8knk1aeqsvv9rok8m8.apps.googleusercontent.com</string>
-
+    <string name="com.crashlytics.useFirebaseAppId">true</string>
 </resources>

@@ -21,7 +21,9 @@ public class Prefs extends FBasicData {
     }
 
     public void addRequest(HelpRequest hr) {
-        addObjectToList("list_help_requests", hr);
+        List<HelpRequest> list = listRequests();
+        list.add(0, hr);
+        writeObject("list_help_requests", list);
     }
 
     public List<HelpRequest> listRequests() {

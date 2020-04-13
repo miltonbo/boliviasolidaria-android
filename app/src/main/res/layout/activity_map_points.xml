@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:checked="true"
-                android:text=" VER CENTROS DE DISTRIBUCION"
+                android:text=" VER CENTROS DE ACOPIO"
                 android:textColor="#424242"
                 android:textSize="17sp"
                 android:textStyle="bold" />

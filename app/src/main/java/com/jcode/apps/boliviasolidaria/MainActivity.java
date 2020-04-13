@@ -30,7 +30,8 @@ public class MainActivity extends Activity {
     }
 
     public void onClickRequestHelp(View view) {
-        Intent intent = new Intent(this, RequestActivity.class);
+//        Intent intent = new Intent(this, RequestActivity.class);
+        Intent intent = new Intent(this, ListHelRequestActivity.class);
         startActivity(intent);
     }
 

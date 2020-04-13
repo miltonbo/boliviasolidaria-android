@@ -10,24 +10,11 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tvTypeAccount"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:text="CAJA DE AHORROS"
-            android:textColor="#424242"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-
-        <TextView
             android:id="@+id/tvNameBank"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:paddingLeft="4dp"
+            android:paddingLeft="6dp"
             android:text="Nombre banco"
             android:textColor="#424242"
             android:textSize="16sp"
@@ -44,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingLeft="10dp"
+            android:paddingLeft="6dp"
             android:text="Nro:"
             android:textColor="#424242"
             android:textSize="16sp"
@@ -71,14 +58,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="38dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingLeft="10dp"
+            android:paddingLeft="6dp"
             android:text="Titular:"
             android:textColor="#424242"
             android:textSize="16sp"
@@ -90,10 +77,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:paddingLeft="10dp"
+            android:paddingLeft="5dp"
             android:text="Nombre titular"
             android:textColor="#424242"
-            android:textSize="18sp" />
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/btnCopyNameTitular"
@@ -114,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingLeft="10dp"
+            android:paddingLeft="6dp"
             android:text="Doc:"
             android:textColor="#424242"
             android:textSize="16sp"

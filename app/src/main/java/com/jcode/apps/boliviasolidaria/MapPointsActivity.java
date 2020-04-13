@@ -1,39 +1,24 @@
 package com.jcode.apps.boliviasolidaria;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.location.LocationManager;
-import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,26 +29,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.jcode.apps.boliviasolidaria.entity.HelpRequest;
 import com.jcode.apps.boliviasolidaria.entity.PointDistribution;
 import com.jcode.apps.boliviasolidaria.entity.PointRequest;
-import com.jcode.apps.boliviasolidaria.utils.FilterImage;
-import com.jcode.apps.boliviasolidaria.utils.ImageManager;
 import com.jcode.apps.boliviasolidaria.web.Api;
-import com.jcode.apps.boliviasolidaria.web.ApiInterface;
-import com.jcode.apps.boliviasolidaria.web.BodyFile;
-import com.jcode.apps.boliviasolidaria.web.ServerResponse;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -134,7 +104,7 @@ public class MapPointsActivity extends FragmentActivity {
                     hmMarkerRequest.clear();
                     BitmapDescriptor bmd = BitmapDescriptorFactory.fromBitmap(getBitmapMarker(R.drawable.marker_red1));
                     for (PointRequest pr : list) {
-                        Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(pr.getLat(), pr.getLng())).icon(bmd));
+                        Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(pr.getLat(), pr.getLng())).title("Ver Solicitud").icon(bmd));
                         hmMarkerRequest.put(marker, pr);
                     }
                 } else {
@@ -153,7 +123,7 @@ public class MapPointsActivity extends FragmentActivity {
 
     private void getCenters() {
         progresCenters = new ProgressDialog(this);
-        progresCenters.setTitle("Cargando Centros de Distribución ...");
+        progresCenters.setTitle("Cargando Centros de Acopio ...");
         Call<List<PointDistribution>> call = Api.getService().listPointCenters();
         call.enqueue(new Callback<List<PointDistribution>>() {
             @Override
@@ -168,17 +138,53 @@ public class MapPointsActivity extends FragmentActivity {
                         hmMarkerPointDist.put(marker, pd);
                     }
                 } else {
-                    Toast.makeText(MapPointsActivity.this, "Fallo al descargar los centros de Distribución.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapPointsActivity.this, "Fallo al descargar los centros de Acopio.", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<PointDistribution>> call, Throwable t) {
                 progresCenters.cancel();
-                Toast.makeText(MapPointsActivity.this, "Fallo al descargar los centros de Distribución.", Toast.LENGTH_LONG).show();
+                Toast.makeText(MapPointsActivity.this, "Fallo al descargar los centros de Acopio.", Toast.LENGTH_LONG).show();
             }
         });
 
+    }
+
+
+    private void openDetailMarker() {
+        if (hmMarkerPointDist.containsKey(markerSelected)) {
+            PointDistribution pd = hmMarkerPointDist.get(markerSelected);
+            Intent intent = new Intent(MapPointsActivity.this, PointDistributionDetailActivity.class);
+            intent.putExtra("pointDistribution", pd);
+            startActivity(intent);
+        } else {
+            progress = new ProgressDialog(this);
+            progress.setTitle("Cargando Solicitud...");
+            progress.show();
+            PointRequest pr = hmMarkerRequest.get(markerSelected);
+            Call<HelpRequest> call = Api.getService().gethelpRequest(pr.getId());
+            call.enqueue(new Callback<HelpRequest>() {
+                @Override
+                public void onResponse(Call<HelpRequest> call, Response<HelpRequest> response) {
+                    progress.cancel();
+                    if (response.body() != null) {
+                        HelpRequest hr = response.body();
+                        Intent intent = new Intent(MapPointsActivity.this, HelpRequestDetailActivity.class);
+                        intent.putExtra("helpRequest", hr);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MapPointsActivity.this, "Fallo al descargar la solicitud.", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HelpRequest> call, Throwable t) {
+                    progress.cancel();
+                    Toast.makeText(MapPointsActivity.this, "Fallo al descargar la solicitud.", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
 
@@ -190,9 +196,12 @@ public class MapPointsActivity extends FragmentActivity {
             map.getUiSettings().setCompassEnabled(true);
             map.getUiSettings().setTiltGesturesEnabled(false);
 
-            map.setOnMarkerClickListener(marker -> {
-                markerSelected = marker;
-                return false;
+            map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    markerSelected = marker;
+                    openDetailMarker();
+                }
             });
 
             getRequest();
