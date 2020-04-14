@@ -36,15 +36,14 @@
 
                 <EditText
                     android:id="@+id/etDesc"
-                    style="@style/EditText1"
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
+                    android:background="@drawable/edit_text"
                     android:gravity="top"
                     android:hint="Describa : Alimentos, pañales, leche, papel, ropa..."
-                    android:inputType="textCapSentences"
-                    android:lines="3"
-                    android:maxLines="3"
-                    android:maxLength="500" />
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="2500"
+                    android:scrollbars="vertical"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -59,7 +58,8 @@
                     style="@style/EditText1"
                     android:layout_width="match_parent"
                     android:hint="Nombre del beneficiario"
-                    android:inputType="textPersonName" />
+                    android:inputType="textCapWords"
+                    android:maxLength="100" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -74,7 +74,8 @@
                     style="@style/EditText1"
                     android:layout_width="match_parent"
                     android:hint="Para contactarse"
-                    android:inputType="phone" />
+                    android:inputType="phone"
+                    android:maxLength="12" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -89,7 +90,8 @@
                     style="@style/EditText1"
                     android:layout_width="match_parent"
                     android:hint="Carnet u otro documento de Identidad"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:maxLength="10" />
 
 
                 <TextView
@@ -105,7 +107,8 @@
                     style="@style/EditText1"
                     android:layout_width="match_parent"
                     android:hint="Dirección donde se entregara la ayuda"
-                    android:inputType="textCapSentences" />
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="500" />
 
             </LinearLayout>
 
@@ -146,24 +149,24 @@
                     android:layout_height="40dp"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/button_1"
+                    android:onClick="onClickFromCamera"
                     android:text="FOTO"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:onClick="onClickFromCamera"/>
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btnGalleryCI"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginTop="5dp"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/button_1"
+                    android:onClick="onClickFromGallery"
                     android:text="GALERIA"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:onClick="onClickFromGallery"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <ImageView
@@ -178,8 +181,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="UBICACION DE ENTREGA:"
             android:layout_marginTop="5dp"
+            android:text="UBICACION DE ENTREGA:"
             android:textColor="#424242"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -187,10 +190,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Deslice el Mapa hasta ubicar el lugar de entrega, con la flecha."
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:alpha="0.9"
+            android:text="Deslice el Mapa hasta ubicar el lugar de entrega, con la flecha."
             android:textColor="#424242"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -242,7 +245,7 @@
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnSaveRequest"
